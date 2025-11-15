@@ -1,7 +1,5 @@
-// main.js — defensive (avoid null refs and common runtime errors)
-
+// main.js — defensive, feature-rich frontend (no TypeScript build required)
 (function () {
-  // getElement helper (returns null if not found)
   const $ = (id) => document.getElementById(id);
 
   const taskInput = $("taskInput");
@@ -16,46 +14,38 @@
   const clearAllBtn = $("clearAll");
   const exportBtn = $("exportBtn");
   const importFile = $("importFile");
+  const themeToggle = $("themeToggle");
 
   if (!taskList) {
-    console.error("Critical: #taskList not found in HTML. Make sure index.html includes <ul id='taskList'>.");
+    console.error("Critical: #taskList not found. Check index.html.");
     return;
   }
 
-  // load tasks safely
+  // load tasks
   let tasks = [];
   try {
     const raw = localStorage.getItem("tasks");
     tasks = raw ? JSON.parse(raw) : [];
     if (!Array.isArray(tasks)) tasks = [];
   } catch (e) {
-    console.warn("Could not parse tasks from localStorage, resetting.", e);
+    console.warn("Could not parse tasks, resetting.", e);
     tasks = [];
   }
 
   const save = () => {
-    try {
-      localStorage.setItem("tasks", JSON.stringify(tasks));
-    } catch (e) {
-      console.warn("Saving tasks failed:", e);
-    }
+    try { localStorage.setItem("tasks", JSON.stringify(tasks)); } catch (e) { console.warn(e); }
   };
 
   const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
 
   const todayISO = () => {
     const d = new Date();
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${y}-${m}-${day}`;
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
   };
 
-  function isOverdue(t) {
-    return t && t.dueDate ? t.dueDate < todayISO() && !t.completed : false;
-  }
+  function isOverdue(t) { return t && t.dueDate ? t.dueDate < todayISO() && !t.completed : false; }
 
-  // Render tasks into #taskList
+  // Render function
   function renderTasks() {
     const q = (searchInput && searchInput.value || "").trim().toLowerCase();
     const filter = (filterSelect && filterSelect.value) || "all";
@@ -63,7 +53,7 @@
 
     let list = tasks.slice();
 
-    // Filter
+    // filters
     if (filter === "active") list = list.filter(t => !t.completed);
     if (filter === "completed") list = list.filter(t => t.completed);
     if (filter === "overdue") list = list.filter(isOverdue);
@@ -71,10 +61,9 @@
     if (filter === "medium") list = list.filter(t => t.priority === "medium");
     if (filter === "low") list = list.filter(t => t.priority === "low");
 
-    // Search
     if (q) list = list.filter(t => (t.text || "").toLowerCase().includes(q));
 
-    // Sort
+    // sorting
     if (sort === "created_desc") list.sort((a, b) => b.createdAt - a.createdAt);
     if (sort === "created_asc") list.sort((a, b) => a.createdAt - b.createdAt);
     if (sort === "due_asc") list.sort((a, b) => {
@@ -87,11 +76,9 @@
       list.sort((a, b) => order[a.priority] - order[b.priority]);
     }
 
-    // clear
     taskList.innerHTML = "";
 
     list.forEach(t => {
-      // defensive checks
       if (!t || !t.id) return;
 
       const li = document.createElement("li");
@@ -136,9 +123,7 @@
 
       const created = document.createElement("span");
       created.className = "timestamp";
-      let createdText = "";
-      try { createdText = new Date(t.createdAt).toLocaleString(); } catch(e) { createdText = ""; }
-      created.textContent = createdText;
+      try { created.textContent = new Date(t.createdAt).toLocaleString(); } catch (e) { created.textContent = ""; }
 
       meta.appendChild(priorityBadge);
       if (t.dueDate) meta.appendChild(dueEl);
@@ -170,13 +155,11 @@
         save(); renderTasks();
       });
 
-      // priority change on click
       priorityBadge.addEventListener("click", () => {
         t.priority = t.priority === "high" ? "medium" : t.priority === "medium" ? "low" : "high";
         save(); renderTasks();
       });
 
-      // change due date quickly
       dueEl.addEventListener("click", () => {
         const newDate = prompt("Set due date (YYYY-MM-DD), empty to remove:", t.dueDate || "");
         if (newDate === null) return;
@@ -191,10 +174,10 @@
       li.appendChild(btns);
       taskList.appendChild(li);
 
-      // drag & drop (defensive)
+      // drag & drop for reordering
       li.draggable = true;
       li.addEventListener("dragstart", (e) => {
-        try { e.dataTransfer && e.dataTransfer.setData("text/plain", t.id); } catch (_) {}
+        try { e.dataTransfer && e.dataTransfer.setData("text/plain", t.id); } catch(_) {}
         li.classList.add("dragging");
       });
       li.addEventListener("dragend", () => li.classList.remove("dragging"));
@@ -209,7 +192,7 @@
             tasks.splice(toIndex, 0, moved);
             save(); renderTasks();
           }
-        } catch (err) { /* ignore drop errors */ }
+        } catch (err) { /* ignore */ }
       });
       li.addEventListener("dragover", (e) => e.preventDefault());
     });
@@ -228,7 +211,7 @@
       priority: (prioritySelect && prioritySelect.value) || "medium"
     };
     tasks.unshift(newTask);
-    if (taskInput) taskInput.value = "";
+    taskInput.value = "";
     if (dueInput) dueInput.value = "";
     save(); renderTasks();
   }
@@ -281,13 +264,28 @@
     } catch (e) { alert("Import failed"); }
   });
 
-  // search/filter/sort listeners
   searchInput && searchInput.addEventListener("input", () => renderTasks());
   filterSelect && filterSelect.addEventListener("change", () => renderTasks());
   sortSelect && sortSelect.addEventListener("change", () => renderTasks());
 
   addBtn && addBtn.addEventListener("click", addTask);
   taskInput && taskInput.addEventListener("keydown", (e) => { if (e.key === "Enter") addTask(); });
+
+  // theme: load saved
+  try {
+    const savedTheme = localStorage.getItem("theme") || "light";
+    if (savedTheme === "dark") {
+      document.body.classList.add("dark");
+      if (themeToggle) themeToggle.textContent = "☀️";
+    }
+  } catch (e) { /* ignore */ }
+
+  // theme toggle
+  themeToggle && themeToggle.addEventListener("click", () => {
+    const isDark = document.body.classList.toggle("dark");
+    themeToggle.textContent = isDark ? "☀️" : "🌙";
+    try { localStorage.setItem("theme", isDark ? "dark" : "light"); } catch (e) {}
+  });
 
   // initial render
   renderTasks();

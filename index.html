@@ -9,7 +9,12 @@
   <body>
     <div class="app-container">
       <header>
-        <h1>☁️ Cloud To-Do List</h1>
+        <div class="header-row">
+          <h1>☁️ Cloud To-Do List</h1>
+          <!-- Dark Mode Toggle -->
+          <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">🌙</button>
+        </div>
+
         <div class="top-actions">
           <input id="searchInput" placeholder="Search tasks..." />
           <select id="filterSelect">
@@ -48,10 +53,10 @@
         <input id="importFile" type="file" accept="application/json" />
       </section>
 
-      <ul id="taskList" class="task-list"></ul>
+      <ul id="taskList" class="task-list" aria-live="polite"></ul>
 
       <footer>
-        <small>Tasks saved locally (localStorage). Backend integration coming next.</small>
+        <small>Tasks saved locally (localStorage). Backend sync will be added later.</small>
       </footer>
     </div>
 
