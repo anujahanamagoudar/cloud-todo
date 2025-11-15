@@ -1,23 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cloud To-Do List</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Cloud To-Do List — Enhanced</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div class="app-container">
-      <h1>☁️ Cloud To-Do List</h1>
+      <header>
+        <h1>☁️ Cloud To-Do List</h1>
+        <div class="top-actions">
+          <input id="searchInput" placeholder="Search tasks..." />
+          <select id="filterSelect">
+            <option value="all">All</option>
+            <option value="active">Active</option>
+            <option value="completed">Completed</option>
+            <option value="overdue">Overdue</option>
+            <option value="high">Priority: High</option>
+            <option value="medium">Priority: Medium</option>
+            <option value="low">Priority: Low</option>
+          </select>
+          <select id="sortSelect">
+            <option value="created_desc">Newest</option>
+            <option value="created_asc">Oldest</option>
+            <option value="due_asc">Due date (soon)</option>
+            <option value="priority">Priority</option>
+          </select>
+        </div>
+      </header>
 
-      <div class="todo-input">
-        <input type="text" id="taskInput" placeholder="Enter a new task..." />
-        <button id="addBtn">Add Task</button>
-      </div>
+      <section class="add-area">
+        <input id="taskInput" placeholder="Add a new task..." />
+        <input id="dueInput" type="date" />
+        <select id="prioritySelect">
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+          <option value="low">Low</option>
+        </select>
+        <button id="addBtn">Add</button>
+      </section>
 
-      <ul id="taskList"></ul>
+      <section class="controls">
+        <button id="deleteCompleted">Delete completed</button>
+        <button id="clearAll">Clear all</button>
+        <button id="exportBtn">Export JSON</button>
+        <input id="importFile" type="file" accept="application/json" />
+      </section>
+
+      <ul id="taskList" class="task-list"></ul>
+
+      <footer>
+        <small>Tasks saved locally (localStorage). Backend integration coming next.</small>
+      </footer>
     </div>
 
-    <script src="main.ts" type="module"></script>
+    <script type="module" src="main.js"></script>
   </body>
 </html>
