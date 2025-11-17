@@ -1,65 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Cloud To-Do List — Enhanced</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div class="app-container">
-      <header>
-        <div class="header-row">
-          <h1>☁️ Cloud To-Do List</h1>
-          <!-- Dark Mode Toggle -->
-          <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">🌙</button>
-        </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cloud To-Do App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
 
-        <div class="top-actions">
-          <input id="searchInput" placeholder="Search tasks..." />
-          <select id="filterSelect">
-            <option value="all">All</option>
-            <option value="active">Active</option>
-            <option value="completed">Completed</option>
-            <option value="overdue">Overdue</option>
-            <option value="high">Priority: High</option>
-            <option value="medium">Priority: Medium</option>
-            <option value="low">Priority: Low</option>
-          </select>
-          <select id="sortSelect">
-            <option value="created_desc">Newest</option>
-            <option value="created_asc">Oldest</option>
-            <option value="due_asc">Due date (soon)</option>
-            <option value="priority">Priority</option>
-          </select>
-        </div>
-      </header>
-
-      <section class="add-area">
-        <input id="taskInput" placeholder="Add a new task..." />
-        <input id="dueInput" type="date" />
-        <select id="prioritySelect">
-          <option value="medium">Medium</option>
-          <option value="high">High</option>
-          <option value="low">Low</option>
-        </select>
-        <button id="addBtn">Add</button>
-      </section>
-
-      <section class="controls">
-        <button id="deleteCompleted">Delete completed</button>
-        <button id="clearAll">Clear all</button>
-        <button id="exportBtn">Export JSON</button>
-        <input id="importFile" type="file" accept="application/json" />
-      </section>
-
-      <ul id="taskList" class="task-list" aria-live="polite"></ul>
-
-      <footer>
-        <small>Tasks saved locally (localStorage). Backend sync will be added later.</small>
-      </footer>
+<body>
+  <header>
+    <div class="header-row">
+      <h1>☁️ Cloud To-Do List</h1>
+      <button id="themeToggle" class="theme-toggle">🌙</button>
     </div>
+  </header>
 
-    <script type="module" src="main.js"></script>
-  </body>
+  <main>
+    <!-- Add Task Form -->
+    <form id="addTaskForm" class="task-form">
+      <input
+        type="text"
+        id="taskInput"
+        placeholder="Enter your task..."
+        required
+      />
+
+      <input type="date" id="dueDateInput" />
+
+      <select id="priorityInput">
+        <option value="medium" selected>Medium</option>
+        <option value="high">High</option>
+        <option value="low">Low</option>
+      </select>
+
+      <button type="submit">Add</button>
+    </form>
+
+    <!-- Task List -->
+    <ul id="taskList" class="task-list"></ul>
+  </main>
+
+  <script src="main.js"></script>
+</body>
 </html>
