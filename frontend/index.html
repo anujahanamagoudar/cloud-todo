@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cloud To-Do App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header>
+    <div class="header-row">
+      <h1>☁️ Cloud To-Do List</h1>
+      <button id="themeToggle" class="theme-toggle">🌙</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Add Task Form -->
+    <form id="addTaskForm" class="task-form">
+      <input
+        type="text"
+        id="taskInput"
+        placeholder="Enter your task..."
+        required
+      />
+
+      <input type="date" id="dueDateInput" />
+
+      <select id="priorityInput">
+        <option value="medium" selected>Medium</option>
+        <option value="high">High</option>
+        <option value="low">Low</option>
+      </select>
+
+      <button type="submit">Add</button>
+    </form>
+
+    <!-- Task List -->
+    <ul id="taskList" class="task-list"></ul>
+  </main>
+
+  <script src="main.js"></script>
+</body>
+</html>

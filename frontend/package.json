@@ -1,0 +1,9 @@
+{
+  "name": "cloud-todo-frontend",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "npx serve"
+  },
+  "devDependencies": {},
+  "dependencies": {}
+}
