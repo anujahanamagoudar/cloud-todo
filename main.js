@@ -9,7 +9,11 @@ const API_BASE = "https://cloud-todo-production.up.railway.app/api";
 // ===========================
 async function loadTasks() {
   try {
-    const res = await fetch(API_BASE);
+    const res = await fetch(`${API_BASE}/tasks`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
     const tasks = await res.json();
     renderTasks(tasks);
   } catch (err) {
@@ -22,13 +26,13 @@ async function loadTasks() {
 // ===========================
 async function addTask(text, dueDate, priority) {
   try {
-    const res = await fetch(API_BASE, {
+    const res = await fetch(`${API_BASE}/tasks`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, dueDate, priority })
+      body: JSON.stringify({ text, dueDate, priority }),
     });
 
-    const newTask = await res.json();
+    await res.json();
     loadTasks(); // refresh UI
   } catch (err) {
     console.error("Failed to add task:", err);
@@ -36,14 +40,14 @@ async function addTask(text, dueDate, priority) {
 }
 
 // ===========================
-// Update a task (complete toggle or text change)
+// Update a task
 // ===========================
 async function updateTask(id, updatedData) {
   try {
-    await fetch(`${API_BASE}/${id}`, {
+    await fetch(`${API_BASE}/tasks/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedData)
+      body: JSON.stringify(updatedData),
     });
     loadTasks();
   } catch (err) {
@@ -56,7 +60,9 @@ async function updateTask(id, updatedData) {
 // ===========================
 async function deleteTask(id) {
   try {
-    await fetch(`${API_BASE}/${id}`, { method: "DELETE" });
+    await fetch(`${API_BASE}/tasks/${id}`, {
+      method: "DELETE",
+    });
     loadTasks();
   } catch (err) {
     console.error("Failed to delete task:", err);
@@ -70,7 +76,7 @@ function renderTasks(tasks) {
   const list = document.getElementById("taskList");
   list.innerHTML = "";
 
-  tasks.forEach(task => {
+  tasks.forEach((task) => {
     const item = document.createElement("li");
     item.className = "task-item";
 
